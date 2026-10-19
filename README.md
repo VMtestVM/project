@@ -11,28 +11,28 @@ Reloading the page restores the seeded demo bike.
 ## Get started
 
 ```sh
-npm ci
-npm run dev
+npm.cmd ci
+npm.cmd run dev
 ```
 
 Vite prints a local URL. To verify the static production build:
 
 ```sh
-npm run build
-npm run preview
+npm.cmd run build
+npm.cmd run preview
 ```
 
 ## Project checks
 
 ```sh
-npm run format:check
-npm run lint
-npm run typecheck
-npm test
-npm run test:e2e
-npm run test:safari # native Safari; requires macOS and safaridriver
-npm run diagrams:check
-npm run build
+npm.cmd run format:check
+npm.cmd run lint
+npm.cmd run typecheck
+npm.cmd test
+npm.cmd run test:e2e
+npm.cmd run test:safari # native Safari; requires macOS and safaridriver
+npm.cmd run diagrams:check
+npm.cmd run build
 ```
 
 The unit/integration suite runs with coverage. Playwright browser tests run the rent, return, reload, keyboard, responsive, and
