@@ -1,0 +1,31 @@
+classDiagram
+    class User {
+        +String userId
+        +String name
+        +PaymentMethod paymentMethod
+    }
+    class Rental {
+        +String rentalId
+        +DateTime startTime
+        +DateTime endTime
+        +double cost
+        +start() void
+        +end() void
+    }
+    class Station {
+        +String stationId
+        +int capacity
+        +dockBike(bike: Bike) void
+        +releaseBike() Bike
+    }
+    class Bike {
+        +String bikeId
+        +int batteryLevel
+        +BikeState state
+        +lock() void
+        +unlock() void
+    }
+
+    User "1" --> "0..*" Rental : makes
+    Rental "*" --> "1" Bike : uses
+    Station "1" o-- "0..*" Bike : holds
