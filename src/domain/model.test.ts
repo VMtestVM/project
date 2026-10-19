@@ -1,7 +1,12 @@
-import { describe, expect, expectTypeOf, it } from 'vitest';
+import { afterEach, describe, expect, expectTypeOf, it, vi } from 'vitest';
+import { isBikeLocked } from './bikeLock';
 import { Bike, domainRelationships, Rental, Station, User } from './model';
 
 describe('domain model conformance (UT-MODEL-01)', () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it('exposes exactly the four diagram classes with their declared attributes', () => {
     const user = new User('u1', 'Rider', 'card');
     const rental = new Rental('r1', '2026-01-01T00:00:00Z', '2026-01-01T01:00:00Z', 1);
@@ -43,22 +48,27 @@ describe('domain model conformance (UT-MODEL-01)', () => {
     expectTypeOf<Bike['unlock']>().toEqualTypeOf<() => void>();
   });
 
-  it('reports operations that await their behavior phase instead of succeeding silently', () => {
-    const rental = new Rental('r1', '2026-01-01T00:00:00Z', '', 0);
-    const station = new Station('s1', 12);
+  it('records rental start and end as ISO UTC timestamps', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-01-01T00:00:00.000Z'));
+    const rental = new Rental('r1', '', '', 0);
+
+    rental.start();
+    expect(rental.startTime).toBe('2026-01-01T00:00:00.000Z');
+    expect(rental.endTime).toBe(rental.startTime);
+
+    vi.setSystemTime(new Date('2026-01-01T00:01:00.000Z'));
+    rental.end();
+    expect(rental.endTime).toBe('2026-01-01T00:01:00.000Z');
+  });
+
+  it('tracks lock and unlock without adding Bike attributes', () => {
     const bike = new Bike('b1', 80);
 
-    expect(() => rental.start()).toThrow(
-      'Rental.start() behavior is not implemented yet.',
-    );
-    expect(() => rental.end()).toThrow('Rental.end() behavior is not implemented yet.');
-    expect(() => station.dockBike(bike)).toThrow(
-      'Station.dockBike() behavior is not implemented yet.',
-    );
-    expect(() => station.releaseBike()).toThrow(
-      'Station.releaseBike() behavior is not implemented yet.',
-    );
-    expect(() => bike.lock()).toThrow('Bike.lock() behavior is not implemented yet.');
+    bike.lock();
+    expect(isBikeLocked(bike)).toBe(true);
+    bike.unlock();
+    expect(isBikeLocked(bike)).toBe(false);
   });
 
   it('represents e1-e3 ends, multiplicities, and e3 aggregation with source cells', () => {

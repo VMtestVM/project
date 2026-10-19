@@ -1,4 +1,6 @@
 import { applyBikeTrigger } from './stateMachine';
+import { dockBikeAtStation, releaseBikeFromStation } from './stationInventory';
+import { lockBike, unlockBike } from './bikeLock';
 
 /** ISO 8601 UTC timestamp string used by the UML `DateTime` type. */
 export type DateTime = string;
@@ -57,12 +59,14 @@ export class Rental {
 
   /** Starts this rental. Source: class.drawio#Rental_m0. */
   public start(): void {
-    throw new Error('Rental.start() behavior is not implemented yet.');
+    const startedAt = new Date().toISOString();
+    this.startTime = startedAt;
+    this.endTime = startedAt;
   }
 
   /** Ends this rental. Source: class.drawio#Rental_m1. */
   public end(): void {
-    throw new Error('Rental.end() behavior is not implemented yet.');
+    this.endTime = new Date().toISOString();
   }
 }
 
@@ -82,14 +86,12 @@ export class Station {
 
   /** Docks a bike. Source: class.drawio#Station_m0. */
   public dockBike(bike: Bike): void {
-    // Station inventory is implemented in the mock-backend phase.
-    void bike;
-    throw new Error('Station.dockBike() behavior is not implemented yet.');
+    dockBikeAtStation(this, bike);
   }
 
   /** Releases a bike. Source: class.drawio#Station_m1. */
   public releaseBike(): Bike {
-    throw new Error('Station.releaseBike() behavior is not implemented yet.');
+    return releaseBikeFromStation(this);
   }
 }
 
@@ -117,12 +119,13 @@ export class Bike {
 
   /** Locks this bike. Source: class.drawio#Bike_m0. */
   public lock(): void {
-    throw new Error('Bike.lock() behavior is not implemented yet.');
+    lockBike(this);
   }
 
   /** Unlocks this bike. Source: class.drawio#Bike_m1. */
   public unlock(): void {
     applyBikeTrigger(this, 'unlock()');
+    unlockBike(this);
   }
 }
 

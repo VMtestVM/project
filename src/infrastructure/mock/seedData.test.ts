@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { Bike, Station, User } from '../../domain/model';
+import { getStationBikes } from '../../domain/stationInventory';
 import { createSeededMockState } from './seedData';
 
 describe('seeded mock state (IT-SEED-01)', () => {
@@ -21,7 +22,7 @@ describe('seeded mock state (IT-SEED-01)', () => {
     expect(bike).toBeInstanceOf(Bike);
     expect(bike.state).toBe('Available');
     expect(bike.batteryLevel).toBeGreaterThan(20);
-    expect(state.stationBikes.get(station)).toEqual([bike]);
+    expect(getStationBikes(station)).toEqual([bike]);
     expect(state.rentals).toEqual([]);
   });
 
@@ -35,7 +36,7 @@ describe('seeded mock state (IT-SEED-01)', () => {
     }
     firstUser.name = 'Changed Rider';
     firstBike.state = 'InUse';
-    firstState.stationBikes.get(firstStation)?.pop();
+    firstStation.releaseBike();
 
     const resetState = createSeededMockState();
     const resetUser = resetState.users[0];
@@ -47,7 +48,7 @@ describe('seeded mock state (IT-SEED-01)', () => {
 
     expect(resetUser.name).toBe('Demo Rider');
     expect(resetBike.state).toBe('Available');
-    expect(resetState.stationBikes.get(resetStation)).toEqual([resetBike]);
+    expect(getStationBikes(resetStation)).toEqual([resetBike]);
     expect(resetUser).not.toBe(firstUser);
     expect(resetBike).not.toBe(firstBike);
   });
