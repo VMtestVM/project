@@ -22,16 +22,6 @@ jobs:
         run: npm ci
       - name: Enable Safari WebDriver
         run: sudo safaridriver --enable
-      - name: Start local site
-        run: |
-          npm run dev -- --host 127.0.0.1 --port 4173 > /tmp/vite.log 2>&1 &
-          echo $! > /tmp/vite.pid
-          for attempt in {1..30}; do
-            if curl --fail http://127.0.0.1:4173/; then exit 0; fi
-            sleep 1
-          done
-          cat /tmp/vite.log
-          exit 1
       - name: Verify native Safari rent, return, and reload
         run: npm run test:safari
 

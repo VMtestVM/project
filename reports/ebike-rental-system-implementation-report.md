@@ -1,7 +1,7 @@
 # E-bike Rental Implementation Report
 
-**Assessment status:** Incomplete — locally verified; public deployment and
-native Safari verification remain outstanding.  
+**Assessment status:** Incomplete — locally verified; GitHub authentication
+is unavailable, so native Safari CI and public deployment remain outstanding.
 **Assessment date:** 2026-10-19  
 **Sources:** UML files in `C:\Users\akomp\Downloads\`, the binding
 specification in [`../specs/ebike-rental-system-specification.md`](../specs/ebike-rental-system-specification.md),
@@ -25,10 +25,12 @@ and application thresholds. The local mobile-emulation LCP and compressed
 JavaScript budgets pass.
 
 **Overall conformance verdict: PARTIAL / NOT YET FULLY CONFORMANT.** This is
-not a completion claim. Phase 8 remains open because native Safari could not
-be tested on this Windows host. Phase 9 remains blocked because no GitHub
-Actions run, public Pages deployment, or deployed-site smoke test was
-performed. No remote was contacted or updated. The local LCP result is not a
+not a completion claim. Native Safari smoke coverage is now configured for
+macOS GitHub Actions, but it has not run. Phase 9 remains blocked because no
+GitHub Actions run, public Pages deployment, or deployed-site smoke test was
+performed. The requested push was attempted, but Git could not authenticate
+non-interactively (`fatal: Cannot prompt because user interactivity has been
+disabled`); the remote was not changed. The local LCP result is not a
 substitute for deployed performance evidence.
 
 ## 2. Code quality assessment
@@ -79,9 +81,10 @@ in the final run and no test is known to be flaky.
 ### Browser and LCP profile
 
 The tested browser versions were Chromium 156.0.8078.4, Microsoft Edge
-155.0.4283.62, Firefox 157.0, and Playwright WebKit 27.2. Safari itself was
-not available on Windows; WebKit is reported as the tested engine, not as a
-native Safari run.
+155.0.4283.62, Firefox 157.0, and Playwright WebKit 27.2. Native Safari is
+not available on Windows. A Selenium smoke test for native Safari and macOS
+CI jobs are committed locally, but they have not run because the push could
+not authenticate.
 
 Lighthouse 13.5.0 measured the local production preview at
 `http://127.0.0.1:4173/`: mobile simulation, 412 × 823 viewport, 1.75 device
@@ -117,6 +120,9 @@ before the final run:
 6. The first local commit attempt had no configured Git author identity. The
    implementation commits were then created with an explicit per-command
    Copilot author; no global Git configuration was changed.
+7. The requested `git push origin main` failed because no non-interactive Git
+   credential was available. No retry with other credentials or remote write
+   mechanism was attempted.
 
 The final clean install emitted transitive deprecation warnings for
 `whatwg-encoding@3.1.1` and `glob@10.5.0`; installation and all checks passed.
@@ -233,21 +239,23 @@ as an aligned diagram fact without qualification.
 - `O-14`: unsupported-trigger behavior remains an assumption.
 - `O-15`: the return sequence omits `returnToStation()` / `t5`; the state
   transition is applied internally after `docked`, without adding a message.
-- Native Safari, public Pages behavior, GitHub Actions run evidence, and
-  deployed LCP remain unverified.
+- The native Safari macOS smoke test is configured but unrun; public Pages
+  behavior, GitHub Actions run evidence, and deployed LCP remain unverified.
 
 ## 6. Required follow-ups and project status
 
-1. Authorize a push/deployment or perform it manually, then record the Pages
-   workflow run and public URL.
+1. Configure GitHub authentication for this environment or push the local
+   commits, then record the CI/Safari workflow results, Pages workflow run,
+   and public URL.
 2. Run the public rent → return → receipt and reload-reset smoke tests; measure
    deployed LCP with a reported device/network profile.
-3. Run the browser suite on native Safari or explicitly approve treating the
-   tested WebKit engine as the Safari verification proxy.
+3. Confirm the configured macOS native Safari smoke passes.
 4. Update this report and the implementation-plan log with the deployment,
    Safari decision, and any new failures/deviations. Only then reconsider
    overall conformance and close the remaining phase gates.
 
-No remote repository was contacted or modified during this work. Local commits
-and phase tags are recorded in Git; Phase 8 remains open, Phase 9 is blocked,
-and overall project completion is not claimed.
+The remote repository was read to confirm that local `main` is a fast-forward
+of remote `main`; the push itself was rejected for missing credentials, so no
+remote content was modified. Local commits and phase tags are recorded in Git.
+Phase 8 awaits native Safari CI; Phase 9 awaits authenticated push and public
+verification. Overall project completion is not claimed.
