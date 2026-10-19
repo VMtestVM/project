@@ -30,14 +30,16 @@ npm run lint
 npm run typecheck
 npm test
 npm run test:e2e
+npm run test:safari # native Safari; requires macOS and safaridriver
 npm run diagrams:check
 npm run build
 ```
 
-The unit/integration suite runs with coverage. browser tests run the rent, return, reload, keyboard, responsive, and
+The unit/integration suite runs with coverage. Playwright browser tests run the rent, return, reload, keyboard, responsive, and
 accessibility checks on Chromium, Microsoft Edge, Firefox, and WebKit; install
 their browsers with `npx playwright install chromium firefox webkit msedge` if
-they are not already available.
+they are not already available. The CI workflow runs a separate native Safari
+rent/return/reload smoke test on macOS.
 
 ## Architecture and model alignment
 

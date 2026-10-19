@@ -12,13 +12,16 @@ npm run typecheck
 npm test
 npx playwright install chromium firefox webkit msedge
 npm run test:e2e
+npm run test:safari
 npm run diagrams:check
 npm run build
 ```
 
 `npm test` runs Vitest unit/integration tests and reports source coverage.
-`npm run test:e2e` runs Playwright tests on Chromium, Microsoft Edge, Firefox,
-and WebKit.
+`npm run test:e2e` runs Playwright tests on Chromium, Microsoft Edge (Windows
+only), Firefox, and WebKit. On macOS with Safari WebDriver enabled,
+`npm run test:safari` runs the rent, return, receipt, and reload-reset smoke
+flow in native Safari. CI runs this test on a macOS GitHub Actions runner.
 Playwright reports traces for failures; generated reports and traces are
 ignored by Git.
 
@@ -55,8 +58,9 @@ below the 200 kB compressed target.
 ### Browser and performance evidence
 
 Playwright runs used Chromium 156.0.8078.4, Microsoft Edge 155.0.4283.62,
-Firefox 157.0, and WebKit 27.2. The Safari-compatible WebKit engine was tested;
-Safari itself was not available on this Windows host.
+Firefox 157.0, and WebKit 27.2. Native Safari is not available on the local
+Windows host; the macOS CI workflow is configured to run the native smoke
+test, and its execution result must be confirmed after CI runs.
 
 Lighthouse 13.5.0 measured the local production preview at
 `http://127.0.0.1:4173/` with mobile simulation (412 × 823 viewport, 1.75 device
