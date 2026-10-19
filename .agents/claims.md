@@ -2,5 +2,5 @@
 
 | Owner | Claim | Heavy task | Status |
 |---|---|---|---|
-| Orchestrator | Phase 1 foundation review and eye gate | No parallel heavy tasks | Awaiting user approval |
-| Implementer | Phase 1 scaffold, package/tooling, app shell, initial CI, README setup | Dependency installation and tests/build | Complete; commit `6b4e47b`; tag `phase-1-complete` |
+| Orchestrator | Phase 2 plan progress, alignment review, gate status | Avoid running tests/build concurrently with implementer | Active |
+| Implementer | Phase 2 domain classes and conformance tests | One targeted test run | Active; owns `src/domain/**`, `src/**/*.test.ts(x)` related to domain |

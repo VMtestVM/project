@@ -76,6 +76,16 @@ The order reduces risk by locking workflow rules and build tooling first, provin
 
 All requirement IDs refer to the binding specification. **Proposal** labels denote recommended tooling/process not fixed by the diagrams or specification.
 
+### Code-generated diagram deliverables
+
+Per the implementation-session instruction (**From current prompt**, supplementing the specification):
+
+- Store GitHub-renderable Mermaid diagrams under `docs/diagrams/generated/`, with a README explaining how each diagram is derived from implementation code.
+- Generate the class diagram after Phase 2, state diagram after Phase 3, rent sequence after Phase 5, and return sequence after Phase 6. Regenerate and verify all at project end.
+- Generate use-case and activity diagrams after UI behavior is implemented. Label both “derived from code, no ground truth” and list behavior they depict that is not covered by UML.
+- Compare every generated class/state/sequence diagram with its source diagram and report all aligned, deviated, or missing elements.
+- Generated artifacts must not add runtime/domain model elements or alter the original flows.
+
 ## 3. Phases
 
 ### Phase 0 — Durable project instructions
@@ -119,8 +129,9 @@ All requirement IDs refer to the binding specification. **Proposal** labels deno
   3. Preserve `PaymentMethod` and `BikeState` as referenced types; do not invent UML classes or class methods (**From model**; `FR-001`).
   4. Implement the approved time boundary and money representation: ISO 8601 UTC, `Rental.end()` records return time immediately before payment, model boundary `cost: double`, internal minor-unit arithmetic if needed (**From decision log**; `FR-001`, `FR-009`; specification Q&A #1).
   5. Add model-conformance tests (**Proposal** test technique; `FR-001`).
+  6. Generate a Mermaid class diagram from the implemented domain definitions and document the code-to-diagram method (**From current prompt**; `FR-001`).
 - **Inputs:** Diagram class cells `User`/`Rental`/`Station`/`Bike`, fields/methods and `e1`–`e3`; specification Sections 4, 4.3, and 7.
-- **Deliverables:** Domain definitions, conformance tests, model-to-code/test references.
+- **Deliverables:** Domain definitions, conformance tests, model-to-code/test references, generated class diagram and generation notes.
 - **Requirements covered:** `FR-001`; applicable data constraints in specification Section 4.3.
 - **Exit criteria:** Exact four-class inventory and members match source; tests verify signatures/types and relation metadata; no extra domain member/class is introduced.
 - **Model alignment check:** Update class, every attribute and method, each relationship, and multiplicity matrix entries with code/test references and aligned/deviated/missing status.
@@ -138,8 +149,9 @@ All requirement IDs refer to the binding specification. **Proposal** labels deno
   4. Apply battery integer range 0–100 and inclusive 20% low threshold to `t7`, without adding a new state or transition (**From decision log**; `FR-005`).
   5. Preserve `repaired()` as `Maintenance → Available` without resetting battery or adding a charge control (**From model/decision log**; `FR-006`, `FR-013`).
   6. Test every transition and timeout behavior; cover triggers internally without reservation/operator screens (**Proposal** test approach; `FR-002`–`FR-006`, `FR-013`).
+  7. Generate a Mermaid state diagram from the implemented transition definitions and compare it with `state.drawio` (**From current prompt**; `FR-002`–`FR-006`).
 - **Inputs:** `state.drawio` cells `init`, states, `t0`–`t8`; class `Bike`; specification Section 5.
-- **Deliverables:** Transition implementation, state-focused tests, updated alignment matrix.
+- **Deliverables:** Transition implementation, state-focused tests, updated alignment matrix, generated state diagram and comparison.
 - **Requirements covered:** `FR-002`–`FR-006`, `FR-013`.
 - **Exit criteria:** All transitions are tested; thresholds/timing match approved values; no new UML method/state/control or implicit battery reset appears.
 - **Model alignment check:** Map each of `init`, four states, and `t0`–`t8` to code and tests. Keep `t1` endpoint omission and `O-14` unsupported-trigger behavior visible.
@@ -173,8 +185,9 @@ All requirement IDs refer to the binding specification. **Proposal** labels deno
   2. Use `Station.releaseBike()` and `Bike.unlock()` as shown; do not insert a return message or reservation step (**From model**; `FR-007`, `O-08`).
   3. Verify the matching Bike state transition to `InUse` through existing `unlock()` semantics; do not add a state-update message (**From model**; `FR-002`, `FR-007`).
   4. Add integration coverage of every message and outcome (**Proposal** test technique; `FR-007`).
+  5. Generate Mermaid rent sequence from the implemented interaction and compare lifelines and `m0`–`m7` (**From current prompt**; `FR-007`).
 - **Inputs:** Rent lifelines and `m0`–`m7`; domain, state, and mock backend.
-- **Deliverables:** Rent use-case orchestration and message-order tests.
+- **Deliverables:** Rent use-case orchestration, message-order tests, generated rent sequence and comparison.
 - **Requirements covered:** `FR-002`, `FR-007`, `FR-014`.
 - **Exit criteria:** Message names, participant directions, and order match sequence; successful rental can be initiated from seeded data; no failure/reservation branch added.
 - **Model alignment check:** Map all rent lifelines, actor, messages `m0`–`m7`, and referenced class methods to code/tests. Track the absent `releaseBike()` return message as an omission, not a deviation.
@@ -191,8 +204,9 @@ All requirement IDs refer to the binding specification. **Proposal** labels deno
   3. Preserve successful `paid`, `cost + receipt`, and `show receipt`; keep unspecified receipt fields minimal/opaque (**From model/decision log**; `FR-008`, `FR-011`).
   4. Preserve `t5` as `returnToStation()` and report the sequence/state-update gap; do not insert or rename messages (**From model**; `FR-002`, `FR-008`, `O-15`).
   5. Add integration tests covering each return message, computed cost, and success response (**Proposal** test technique; `FR-008`, `FR-009`, `FR-011`).
+  6. Generate Mermaid return sequence from the implemented interaction and compare lifelines and `m0`–`m8` (**From current prompt**; `FR-008`).
 - **Inputs:** Return `L_*` lifelines and `m0`–`m8`; `t5`; domain, state, pricing, payment.
-- **Deliverables:** Return use-case orchestration and message-order/pricing tests.
+- **Deliverables:** Return use-case orchestration, message-order/pricing tests, generated return sequence and comparison.
 - **Requirements covered:** `FR-002`, `FR-008`, `FR-009`, `FR-011`.
 - **Exit criteria:** Exact successful sequence order and labels; end timestamp precedes charge; totals pass zero/partial/exact/over-minute tests; no failure branch added.
 - **Model alignment check:** Map every return lifeline, actor, `m0`–`m8`, class method, and state transition to code/tests; keep `O-15` open if no explicit model amendment is approved.
@@ -208,8 +222,9 @@ All requirement IDs refer to the binding specification. **Proposal** labels deno
   2. Connect accessible controls and status output to the tested use cases (**Proposal**; `NFR-001`, `NFR-002`).
   3. Ensure no authentication, reservation workflow, operator/admin UI, added domain model, or sequence branch (**From decision log/model**; `FR-007`, `FR-008`, `FR-013`).
   4. Add component and browser tests for the two happy paths (**Proposal**; `FR-007`, `FR-008`).
+  5. Generate use-case and activity diagrams from implemented UI/application behavior; label “derived from code, no ground truth” and enumerate behavior not covered by UML (**From current prompt**; `FR-007`, `FR-008`).
 - **Inputs:** Approved rent/return use cases; NFR targets; scope decision in specification.
-- **Deliverables:** Customer-facing rent/return UI and component/E2E tests.
+- **Deliverables:** Customer-facing rent/return UI, component/E2E tests, generated use-case/activity diagrams with explicit no-ground-truth annotation.
 - **Requirements covered:** `FR-007`, `FR-008`, `FR-013`, `NFR-001`–`NFR-004`.
 - **Exit criteria:** Both flows operate from the browser, keyboard use is supported, responsive layouts work, and no excluded screens/flows are present.
 - **Model alignment check:** Map visible interactions to the exact rent/return message IDs; confirm all hidden state transitions remain covered; record any deviations.
@@ -226,8 +241,9 @@ All requirement IDs refer to the binding specification. **Proposal** labels deno
   3. Measure compressed JS <= 200 KB and LCP <= 2.5 s under a reported representative mobile profile (**Proposal**; `NFR-005`, `NFR-006`).
   4. Produce README, architecture, test, and deployment docs (**From decision log**; specification Q&A #11, Section 16).
   5. Keep test/coverage target tooling non-binding unless changed by approved ADR (**Proposal**; Section 12; target is 80% statements/branches/functions for domain/application).
+  6. Regenerate all five diagrams from implementation sources and verify reproducibility and model comparisons (**From current prompt**).
 - **Inputs:** All implementation phases 1–7; NFRs and documentation requirements.
-- **Deliverables:** Verified implementation, quality evidence, README and `docs/architecture.md`, `docs/testing.md`, `docs/deployment.md`.
+- **Deliverables:** Verified implementation, quality evidence, README and `docs/architecture.md`, `docs/testing.md`, `docs/deployment.md`, reproducible diagram generation and comparisons.
 - **Requirements covered:** `NFR-001`–`NFR-007`; documentation items in specification Sections 11 and 16.
 - **Exit criteria:** All checks run; failures, skips, flakes, unmet budgets and real coverage recorded; all required docs accurate; no silent assumptions.
 - **Model alignment check:** Review the full matrix through classes/members/relationships, states/transitions, participants/messages and tests. Do not close any open item by inference.
@@ -315,8 +331,8 @@ Update this section after each approved phase. Do not create a separate tracker 
 |---|---|---|---|---|
 | Planning | Complete — plan approved by request to begin Phase 1 | Plan Q&A: rental end time set by `Rental.end()` immediately before charge; positive durations round up; zero duration has unlock fee only. Approved ADR policy: accepted ADR can authorize implementation deviation with diagrams unchanged; record as a specification update and mark deviated. `AGENTS.md` content approved in planning. | Re-read diagrams, exploration, specification, plan, and README. No agent instruction file existed in worktree; created exact approved content. | Specification `O-04` still marks end-time semantics open, conflicting with plan's later Q&A clarification; higher-priority specification controls until formally updated. Defer as a Phase 6 blocker. |
 | Phase 0 | Complete — user authorized start of Phase 1 and stated instruction approved | Exact plan `AGENTS.md` proposal applied at repository root. | Confirmed file contents match the plan proposal. | No implementation code in this phase. |
-| Phase 1 | Implementation and checks passed; awaiting eye-gate approval | Proposed TypeScript/Vite/React baseline; no ADR or new architecture decision. | Clean install, format check, lint, type-check, full configured unit suite (1 test; 100% statements/branches/functions/lines for `App.tsx`), and production build passed. Compressed JavaScript baseline: 59.03 kB gzip (under the 200 KB `NFR-005` target). Full Phase 1 alignment inventory follows. | No diagram/model deviation or domain implementation. `O-04` remains an explicit blocker to resolve before Phase 6. Initial lint-config and dependency-resolution attempts were corrected; npm reported two transitive deprecation warnings. |
-| Phase 2 | Not started | — | — | — |
+| Phase 1 | Checks passed; gate unanswered; autonomous continuation directed by user | Latest user instruction says continue autonomously after no gate response; this is recorded as a gate bypass, not an explicit phase approval. Proposed TypeScript/Vite/React baseline; no ADR or new architecture decision. | Clean install, format check, lint, type-check, full configured unit suite (1 test; 100% statements/branches/functions/lines for `App.tsx`), and production build passed. Compressed JavaScript baseline: 59.03 kB gzip (under the 200 KB `NFR-005` target). Every model element is listed below as missing/not yet implemented. | No diagram/model deviation or domain implementation. `O-04` remains an explicit specification/plan conflict. Initial lint-config and dependency-resolution attempts were corrected; npm reported two transitive deprecation warnings. |
+| Phase 2 | In progress — domain model | Proceeding under user’s latest autonomous-continuation instruction; Phase 1’s eye-gate answer was unavailable. | Phase 1 full diagram inventory remains missing/not yet implemented; Phase 2 class/member/relationship matrix pending. | `O-04` is not to be silently resolved. |
 | Phase 3 | Not started | — | — | — |
 | Phase 4 | Not started | — | — | — |
 | Phase 5 | Not started | — | — | — |
