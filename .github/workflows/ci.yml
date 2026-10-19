@@ -28,5 +28,11 @@ jobs:
         run: npm run typecheck
       - name: Run unit tests with coverage
         run: npm test
+      - name: Install browser engines
+        run: npx playwright install --with-deps chromium firefox webkit msedge
+      - name: Run browser tests
+        run: npm run test:e2e
+      - name: Check generated diagrams
+        run: npm run diagrams:check
       - name: Build static site
         run: npm run build
