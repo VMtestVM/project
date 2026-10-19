@@ -278,9 +278,9 @@ Maintain the matrix in the progress log during work, then include the complete f
 | Source diagram | Element ID/name | Required behavior | Code reference | Test reference | Status | Notes/ADR |
 |---|---|---|---|---|---|---|
 | `class.drawio` | Class, every attribute/method, `e1`–`e3` and multiplicity cells | Exact model representation | File/symbol | Test ID | aligned/deviated/missing | Issues/ADR |
-| `state.drawio` | `init`, each state, `t0`–`t8` | Exact transition | File/symbol | Test ID | aligned/deviated/missing | `t1` XML-source issue |
-| `sequence_rent.drawio` | User, each lifeline, `m0`–`m7` | Exact participant/message/direction/order | File/symbol | Test ID | aligned/deviated/missing | No inserted return message |
-| `sequence_return.drawio` | User, each lifeline, `m0`–`m8` | Exact participant/message/direction/order | File/symbol | Test ID | aligned/deviated/missing | `t5` relationship |
+| `state.drawio` | Initial `init`; states `Available`, `Reserved`, `InUse`, `Maintenance`; `t0` through `t8` | Exact transition | File/symbol | Test ID | aligned/deviated/missing | `t1` XML-source issue |
+| `sequence_rent.drawio` | User, each lifeline, `m0` through `m7` | Exact participant/message/direction/order | File/symbol | Test ID | aligned/deviated/missing | No inserted return message |
+| `sequence_return.drawio` | User, each lifeline, `m0` through `m8` | Exact participant/message/direction/order | File/symbol | Test ID | aligned/deviated/missing | `t5` relationship |
 
 Before phase completion, update relevant rows and review all existing rows for regressions. `Missing` is the honest status for an unimplemented element; it is not a passing status. A deviation requires an accepted ADR and remains marked **deviated**.
 
@@ -315,7 +315,7 @@ Update this section after each approved phase. Do not create a separate tracker 
 |---|---|---|---|---|
 | Planning | Complete — plan approved by request to begin Phase 1 | Plan Q&A: rental end time set by `Rental.end()` immediately before charge; positive durations round up; zero duration has unlock fee only. Approved ADR policy: accepted ADR can authorize implementation deviation with diagrams unchanged; record as a specification update and mark deviated. `AGENTS.md` content approved in planning. | Re-read diagrams, exploration, specification, plan, and README. No agent instruction file existed in worktree; created exact approved content. | Specification `O-04` still marks end-time semantics open, conflicting with plan's later Q&A clarification; higher-priority specification controls until formally updated. Defer as a Phase 6 blocker. |
 | Phase 0 | Complete — user authorized start of Phase 1 and stated instruction approved | Exact plan `AGENTS.md` proposal applied at repository root. | Confirmed file contents match the plan proposal. | No implementation code in this phase. |
-| Phase 1 | In progress | Proposed baseline only; no new architecture decision. | Foundation tasks underway; model elements remain unimplemented and are tracked as missing/not yet implemented in the phase 1 matrix. | End-time precedence conflict `O-04` recorded; no impact on foundation. |
+| Phase 1 | Implementation and checks passed; awaiting eye-gate approval | Proposed TypeScript/Vite/React baseline; no ADR or new architecture decision. | Clean install, format check, lint, type-check, full configured unit suite (1 test; 100% statements/branches/functions/lines for `App.tsx`), and production build passed. Compressed JavaScript baseline: 59.03 kB gzip (under the 200 KB `NFR-005` target). Full Phase 1 alignment inventory follows. | No diagram/model deviation or domain implementation. `O-04` remains an explicit blocker to resolve before Phase 6. Initial lint-config and dependency-resolution attempts were corrected; npm reported two transitive deprecation warnings. |
 | Phase 2 | Not started | — | — | — |
 | Phase 3 | Not started | — | — | — |
 | Phase 4 | Not started | — | — | — |
@@ -325,6 +325,32 @@ Update this section after each approved phase. Do not create a separate tracker 
 | Phase 8 | Not started | — | — | — |
 | Phase 9 | Not started | — | — | — |
 | Phase 10 | Not started | — | — | — |
+
+
+#### Phase 1 closeout evidence — 2026-10-19
+
+**Scope and environment.** The TypeScript/Vite/React stack is the task's selected foundation, with no architecture change or ADR. The app is only a static welcome shell; it contains no UML domain class, state machine, rent/return flow, or additional UI flow. The relative Vite asset base is used for static hosting below a repository path. Node.js 24.20.0 was downloaded as a temporary, checksum-verified official portable archive and used from the project workspace because `node`/`npm` were not on PATH; no machine-wide installation was made. The temporary runtime and build/install outputs are removed after checks.
+
+**Verification.** Commands run with Node 24.20.0: `npm install --no-audit --no-fund` (lock generation), `npm ci --no-audit --no-fund`, `npm run format`, `npm run format:check`, `npm run lint`, `npm run typecheck`, `npm test`, and `npm run build`. Final clean install and every configured check passed. The one configured test passed; coverage is 100% statements, branches, functions, and lines for the only covered source file, `src/App.tsx` (domain/application coverage is not applicable because those layers have not started). Vite built the JS at 187.60 kB uncompressed / **59.03 kB gzip**, below `NFR-005`'s 200 KB compressed-JavaScript target. The final clean install emitted deprecation warnings for transitive `whatwg-encoding@3.1.1` and `glob@10.5.0`; they did not fail installation. An initial ESLint flat-config mismatch and an initial npm dependency-resolution attempt were corrected before the final successful rerun. No tests were skipped; browser E2E and deployment smoke tests are not configured in Phase 1.
+
+**Baseline direct dependencies.** Runtime: React/React DOM 19.1.1. Tooling: Vite 7.1.4, TypeScript 5.9.2, Vitest 3.2.4, ESLint 10.13.0, Prettier 3.6.2; exact remaining versions are pinned in `package.json` and `package-lock.json`. The npm install-script approval is limited to esbuild's required postinstall (`allowScripts` entry).
+
+**Generated diagrams.** Code-generated diagrams are not applicable in Phase 1 because no model or flows are implemented. Schedule class-diagram generation/alignment after Phase 2, state-diagram generation/alignment after Phase 3, rent-sequence generation/alignment after Phase 5, return-sequence generation/alignment after Phase 6, and a consolidated final comparison in Phase 10. This does not modify any supplied specification or input diagram.
+
+**Phase 1 alignment matrix.** Every element below is intentionally **missing / not yet implemented**, not a code deviation. Source IDs are retained for the later phase trace.
+
+| Source | Diagram element(s) and source ID(s) | Phase 1 status | Note |
+|---|---|---|---|
+| `class.drawio` | `User`; `userId` (`User_f0`), `name` (`User_f1`), `paymentMethod` (`User_f2`) | Missing / not yet implemented | No domain classes have been implemented. |
+| `class.drawio` | `Rental`; `rentalId` (`Rental_f0`), `startTime` (`Rental_f1`), `endTime` (`Rental_f2`), `cost` (`Rental_f3`), `start()` (`Rental_m0`), `end()` (`Rental_m1`) | Missing / not yet implemented | — |
+| `class.drawio` | `Station`; `stationId` (`Station_f0`), `capacity` (`Station_f1`), `dockBike(bike: Bike)` (`Station_m0`), `releaseBike(): Bike` (`Station_m1`) | Missing / not yet implemented | — |
+| `class.drawio` | `Bike`; `bikeId` (`Bike_f0`), `batteryLevel` (`Bike_f1`), `state` (`Bike_f2`), `lock()` (`Bike_m0`), `unlock()` (`Bike_m1`) | Missing / not yet implemented | — |
+| `class.drawio` | User–Rental `e1` (ends `e1_a`, `e1_b`); Rental–Bike `e2` (`e2_a`, `e2_b`); Station–Bike aggregation `e3` (`e3_a`, `e3_b`) | Missing / not yet implemented | Multiplicities and hollow-diamond aggregation are not yet represented in code. |
+| `state.drawio` | Initial `init`; states `Available`, `Reserved`, `InUse`, `Maintenance`; `t0` Initial -> Available; `t1` Available -> Reserved (`reserve()`); `t2` Reserved -> Available (`timeout` / `cancel()`); `t3` Reserved -> InUse (`unlock()`); `t4` Available -> InUse (`unlock()`); `t5` InUse -> Available (`returnToStation()`); `t6` InUse -> Maintenance (`reportFault()`); `t7` Available -> Maintenance (`batteryLow()`); `t8` Maintenance -> Available (`repaired()`) | Missing / not yet implemented | Includes the interpreted `t1` connector; no implementation deviation. |
+| `sequence_rent.drawio` | Participants: User actor (`MveSr_KsUtKa4BIEBlV2-5`), App (`L_App`), Station (`L_Station`), Bike (`L_Bike`), Rental (`L_Rental`); `m0` `selectBike(bikeId)`, `m1` `checkAvailable()`, `m2` `Available`, `m3` `releaseBike()`, `m4` `unlock()`, `m5` `start()`, `m6` `rental started`, `m7` `unlocked, ride started` | Missing / not yet implemented | No rent flow is present. |
+| `sequence_return.drawio` | Participants: User actor (`POrdqQGPlNZNEqtTAqEn-1`), App (`L_App`), Station (`L_Station`), Bike (`L_Bike`), Rental (`L_Rental`), PaymentService (`L_PaymentService`); `m0` `returnBike()`, `m1` `dockBike(bike)`, `m2` `lock()`, `m3` `docked`, `m4` `end()`, `m5` `charge(cost)`, `m6` `paid`, `m7` `cost + receipt`, `m8` `show receipt` | Missing / not yet implemented | No return/payment flow is present. |
+
+**Open blocker carried forward.** The plan's planning Q&A says `Rental.end()` records end time before charge, but specification `O-04` still leaves active-rental `endTime` nullability/value semantics open and has precedence under the plan. Preserve that conflict; resolve it explicitly before Phase 6. No Phase 1 assumption resolves it.
 
 ### ADR index
 
