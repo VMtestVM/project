@@ -34,8 +34,8 @@ ignored by Git.
 | `FR-010`, `FR-014`  | `src/infrastructure/mock/seedData.test.ts` and browser reload test: fresh seed state after reload.                                                                                                             |
 | `FR-012`            | Production build plus the GitHub Pages deployment and smoke test described in `deployment.md`.                                                                                                                 |
 | `FR-013`            | UI exposes only rent and return; state unit tests cover reservation and maintenance transitions without UI.                                                                                                    |
-| `NFR-001`           | Browser keyboard flow and axe-core checks on the initial and receipt screens; manual visible-focus review.                                                                                                     |
-| `NFR-002`–`NFR-004` | Browser checks on Chromium, Firefox, WebKit; mobile-width layout and locale-aware EUR formatting.                                                                                                              |
+| `NFR-001`           | Browser keyboard flow, a 3px visible-focus assertion, and axe-core checks on the initial and receipt screens.                                                                                                  |
+| `NFR-002`–`NFR-004` | Browser checks on Chromium, Edge, Firefox, and WebKit; 375px layout and locale-aware EUR formatting.                                                                                                           |
 | `NFR-005`–`NFR-006` | Production compressed-bundle measurement and separately recorded LCP measurement.                                                                                                                              |
 | `NFR-007`           | Formatting, lint, typecheck, tests, build, and code-quality review.                                                                                                                                            |
 
