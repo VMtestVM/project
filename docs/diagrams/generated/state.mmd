@@ -1,0 +1,11 @@
+stateDiagram-v2
+    [*] --> Available : t0
+    Available --> Reserved : reserve() / t1
+    Reserved --> Available : timeout after 10 minutes / t2
+    Reserved --> Available : cancel() / t2
+    Reserved --> InUse : unlock() / t3
+    Available --> InUse : unlock() / t4
+    InUse --> Available : returnToStation() / t5
+    InUse --> Maintenance : reportFault() / t6
+    Available --> Maintenance : batteryLow() [batteryLevel <= 20] / t7
+    Maintenance --> Available : repaired() / t8

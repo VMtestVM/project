@@ -1,3 +1,5 @@
+import { applyBikeTrigger } from './stateMachine';
+
 /** ISO 8601 UTC timestamp string used by the UML `DateTime` type. */
 export type DateTime = string;
 
@@ -103,10 +105,14 @@ export class Bike {
   public state: BikeState;
 
   /** Initializes the three public attributes declared for Bike. */
-  public constructor(bikeId: string, batteryLevel: number, state: BikeState) {
+  public constructor(bikeId: string, batteryLevel: number) {
+    if (!Number.isInteger(batteryLevel) || batteryLevel < 0 || batteryLevel > 100) {
+      throw new RangeError('Bike battery level must be an integer from 0 to 100.');
+    }
+
     this.bikeId = bikeId;
     this.batteryLevel = batteryLevel;
-    this.state = state;
+    this.state = 'Available';
   }
 
   /** Locks this bike. Source: class.drawio#Bike_m0. */
@@ -116,7 +122,7 @@ export class Bike {
 
   /** Unlocks this bike. Source: class.drawio#Bike_m1. */
   public unlock(): void {
-    throw new Error('Bike.unlock() behavior is not implemented yet.');
+    applyBikeTrigger(this, 'unlock()');
   }
 }
 

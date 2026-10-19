@@ -9,6 +9,7 @@ members, types, and relationship metadata.
 | Diagram | Source of implementation details | Ground truth comparison |
 |---|---|---|
 | `class.mmd` | `src/domain/model.ts` | `class.drawio`; see the Phase 2 alignment matrix in the implementation plan. |
+| `state.mmd` | `src/domain/stateMachine.ts` and the `Bike` constructor in `src/domain/model.ts` | `state.drawio`; see the Phase 3 alignment matrix in the implementation plan. |
 
 No use-case or activity diagrams are available yet; those will be derived from
 implemented behavior and explicitly labeled as having no UML ground truth.
