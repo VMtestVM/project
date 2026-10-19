@@ -1,0 +1,16 @@
+sequenceDiagram
+    actor User
+    participant App
+    participant Station
+    participant Bike
+    participant Rental
+    participant PaymentService
+    User->>App: returnBike() (m0)
+    App->>Station: dockBike(bike) (m1)
+    Station->>Bike: lock() (m2)
+    Station-->>App: docked (m3)
+    App->>Rental: end() (m4)
+    Rental->>PaymentService: charge(cost) (m5)
+    PaymentService-->>Rental: paid (m6)
+    Rental-->>App: cost + receipt (m7)
+    App-->>User: show receipt (m8)

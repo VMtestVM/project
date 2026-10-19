@@ -1,0 +1,14 @@
+sequenceDiagram
+    actor User
+    participant App
+    participant Station
+    participant Bike
+    participant Rental
+    User->>App: selectBike(bikeId) (m0)
+    App->>Bike: checkAvailable() (m1)
+    Bike-->>App: Available (m2)
+    App->>Station: releaseBike() (m3)
+    Station->>Bike: unlock() (m4)
+    App->>Rental: start() (m5)
+    Rental-->>App: rental started (m6)
+    App-->>User: unlocked, ride started (m7)

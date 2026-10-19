@@ -1,0 +1,22 @@
+%% Derived from code, no ground truth.
+flowchart TD
+    start((Start))
+    start --> rent1["m0: selectBike(bikeId)"] --> rent2
+    rent2["m1: checkAvailable()"] --> rent3
+    rent3["m2: Available"] --> rent4
+    rent4["m3: releaseBike()"] --> rent5
+    rent5["m4: unlock()"] --> rent6
+    rent6["m5: start()"] --> rent7
+    rent7["m6: rental started"] --> rent8
+    rent8["m7: unlocked, ride started"]
+    rent8 --> return1["m0: returnBike()"] --> return2
+    return2["m1: dockBike(bike)"] --> return3
+    return3["m2: lock()"] --> return4
+    return4["m3: docked"] --> return5
+    return5["m4: end()"] --> return6
+    return6["m5: charge(cost)"] --> return7
+    return7["m6: paid"] --> return8
+    return8["m7: cost + receipt"] --> return9
+    return9["m8: show receipt"]
+    return9 --> finish((End))
+    reload((Reload page)) --> seed[Create fresh seeded mock state]

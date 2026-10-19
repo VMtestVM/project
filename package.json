@@ -11,14 +11,19 @@
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\" package*.json *.config.js *.config.ts *.json *.html README.md .github/workflows/*.yml .prettierrc.json",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit -p tsconfig.app.json && tsc --noEmit -p tsconfig.node.json",
-    "test": "vitest run --coverage"
+    "test": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "diagrams:generate": "node scripts/generate-diagrams.mjs",
+    "diagrams:check": "node scripts/generate-diagrams.mjs --check"
   },
   "dependencies": {
     "react": "19.1.1",
     "react-dom": "19.1.1"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.11.1",
     "@eslint/js": "10.0.1",
+    "@playwright/test": "1.64.1",
     "@testing-library/react": "16.3.0",
     "@types/node": "24.3.0",
     "@types/react": "19.1.12",
